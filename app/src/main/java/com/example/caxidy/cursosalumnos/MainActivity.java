@@ -1,6 +1,5 @@
-/*BD: Cursos (idCurso,Nombre), Alumnos(id,Nombre,Apellidos,idCurso),
-Profesores (idProf,Nombre),Asignaturas(idAsignatura,nombre,idProfesor,idCurso)
-En el drawer, cuando pulsas un item d asignatura sale un dialog en el que pone
+/*-ExpandableListView con los cursos del ciclo y sus alumnos
+-Navigation Drawer con ListView: en el drawer, cuando pulsas un item d asignatura sale un dialog en el que pone
 el curso en el que se da y el profesor que la imparte.*/
 
 /*Actividades finales 2 y 3: uso de ExpandableListView y Navigation Drawer que contenga un ListView + uso de base de datos */

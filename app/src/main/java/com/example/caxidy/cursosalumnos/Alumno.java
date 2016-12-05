@@ -4,7 +4,12 @@ public class Alumno {
     int id, idCurso;
     String nombre, apellido;
 
-    public Alumno(){}
+    public Alumno(){
+        id=0;
+        nombre="";
+        apellido="";
+        idCurso=0;
+    }
 
     public Alumno(int id, String nombre, String apellido, int idCurso){
         this.id=id;

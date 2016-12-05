@@ -4,7 +4,10 @@ public class Curso {
     int id;
     String nombre;
 
-    public Curso(){}
+    public Curso(){
+        id=0;
+        nombre="";
+    }
 
     public Curso(int id, String nombre){
         this.id=id;
