@@ -1,6 +1,8 @@
 package com.example.caxidy.cursosalumnos;
 
-public class Asignatura {
+import java.io.Serializable;
+
+public class Asignatura implements Serializable {
     int id, idProfesor, idCurso;
     String nombre;
 

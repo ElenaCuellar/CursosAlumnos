@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">CursosAlumnos</string>
+    <string name="al1">"Student: "</string>
+    <string name="gr1">\"Group \"</string>
+    <string name="gr2">" is opened"</string>
+    <string name="gr3">" is closed"</string>
+    <string name="navigation_drawer_close">Opened Navigation Drawer</string>
+    <string name="navigation_drawer_open">Closed Navigation Drawer</string>
+    <string name="asigCargadaErr">Error while loading subject list</string>
+    <string name="asig1">"Subject: "</string>
+    <string name="curso1">"Year: "</string>
+    <string name="prof1">"Teacher: "</string>
+    <string name="aceptar">OK</string>
+    <string name="cargAl">Error while loading student on the group</string>
+    <string name="cargCr">Error while loading years</string>
+    <string name="agrCr">Years added successfully</string>
+    <string name="agrCrErr">Error while adding years</string>
+    <string name="agrAl">Students added successfully</string>
+    <string name="agrAlErr">Error while adding students</string>
+    <string name="agrAs">Subjects added successfully</string>
+    <string name="agrAsErr">Error while adding subjects</string>
+    <string name="agrPr">Teachers added successfully</string>
+    <string name="agrPrErr">Error while adding teachers</string>
+    <string name="asigRCargada">Subject list reloaded</string>
+    <string name="asigCargada">Subject list loaded</string>
+    <string name="navheader1">Subjects</string>
+    <string name="navheader2">Subjects on the different years</string>
+</resources>

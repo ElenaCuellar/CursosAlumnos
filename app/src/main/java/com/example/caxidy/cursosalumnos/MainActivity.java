@@ -1,38 +1,37 @@
-/*-Localizar todos los String
--Navigation Drawer con ListView: en el drawer, cuando pulsas un item d asignatura sale un dialog en el que pone
-el curso en el que se da y el profesor que la imparte.*/
-
-/*Actividades finales 2 y 3: uso de ExpandableListView y Navigation Drawer que contenga un ListView + uso de base de datos */
+/*Actividades finales 2 y 3: uso de ExpandableListView y Navigation Drawer que contenga un ListView + uso de base de datos
+ * La aplicacion consta de un ExpandableListView de los cursos del ciclo, con sus alumnos y de un Navigation Drawer que
+  * contiene un ListView con las asignaturas de los cursos. Si se selecciona una asignatura sale un Dialog con informacion.*/
 
 package com.example.caxidy.cursosalumnos;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.view.View;
-import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.widget.AdapterView;
 import android.widget.ExpandableListView;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity {
 
     ExpandableListView listaExpandable;
     ExpandableListAdapter adaptadorExpandable;
     List<String> listaCabeceras;
     HashMap<String,List<String>> listaHijos;
     BDCursos bd;
+    ListView listaAsignaturas;
+    AdaptadorAsignaturas adpAsig;
+    ArrayList<Asignatura> arrayAsig;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +54,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public boolean onChildClick(ExpandableListView parent, View v,
                                         int groupPosition, int childPosition, long id) {
-                Toast.makeText(getApplicationContext(), "Alumno: " + listaHijos.get(listaCabeceras.get(groupPosition)).get(childPosition),
+                Toast.makeText(getApplicationContext(), getString(R.string.al1) + listaHijos.get(listaCabeceras.get(groupPosition)).get(childPosition),
                         Toast.LENGTH_SHORT).show();
                 return false;
             }
@@ -64,7 +63,7 @@ public class MainActivity extends AppCompatActivity
         listaExpandable.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
             @Override
             public void onGroupExpand(int groupPosition) {
-                Toast.makeText(getApplicationContext(), "El grupo "+listaCabeceras.get(groupPosition) + " se ha abierto",
+                Toast.makeText(getApplicationContext(), getString(R.string.gr1)+listaCabeceras.get(groupPosition) + getString(R.string.gr2),
                         Toast.LENGTH_SHORT).show();
             }
         });
@@ -72,11 +71,10 @@ public class MainActivity extends AppCompatActivity
         listaExpandable.setOnGroupCollapseListener(new ExpandableListView.OnGroupCollapseListener() {
             @Override
             public void onGroupCollapse(int groupPosition) {
-                Toast.makeText(getApplicationContext(), "El grupo "+listaCabeceras.get(groupPosition) + " se ha cerrado",
+                Toast.makeText(getApplicationContext(), getString(R.string.gr1)+listaCabeceras.get(groupPosition) + getString(R.string.gr3),
                         Toast.LENGTH_SHORT).show();
             }
         });
-
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -84,8 +82,55 @@ public class MainActivity extends AppCompatActivity
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+        //Lista del Drawer: llenar los datos y configurar el adaptador
+        listaAsignaturas = (ListView) findViewById(android.R.id.list);
+        arrayAsig = new ArrayList<>();
+
+        if(!bd.hayProfesores()){
+            llenarBDProfesores();
+        }
+
+        if(!bd.hayAsignaturas()){
+            llenarBDAsignaturas();
+        }
+
+        arrayAsig = new ArrayList<>();
+        arrayAsig = bd.listarAsignaturas();
+        if(arrayAsig != null) {
+            adpAsig = new AdaptadorAsignaturas(this, arrayAsig);
+            adpAsig.notifyDataSetChanged();
+            listaAsignaturas.setAdapter(adpAsig);
+            Toast.makeText(getApplicationContext(),getString(R.string.asigCargada),Toast.LENGTH_SHORT).show();
+        }
+        else
+            Toast.makeText(getApplicationContext(),getString(R.string.asigCargadaErr),Toast.LENGTH_SHORT).show();
+
+        //Listener del ListView de asignaturas
+        listaAsignaturas.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView adapter, View view, int position, long arg)
+            {
+                Asignatura asig = (Asignatura) listaAsignaturas.getAdapter().getItem(position);
+
+                //Sacamos la informacion de la asignatura en un Dialog
+                mostrarDialog(asig);
+            }
+        });
+    }
+
+    public void mostrarDialog(Asignatura asig){
+
+        AlertDialog.Builder alertDialogBu = new AlertDialog.Builder(this);
+        alertDialogBu.setTitle(asig.getNombre());
+        alertDialogBu.setMessage(getString(R.string.asig1)+asig.getNombre()+"\n"+getString(R.string.curso1)+bd.mostrarCursoAsig(asig.getID())+"\n"+
+                getString(R.string.prof1)+ bd.mostrarProfesorAsig(asig.getID()));
+        alertDialogBu.setIcon(R.mipmap.ic_launcher);
+
+        alertDialogBu.setPositiveButton(getString(R.string.aceptar), new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {}
+        });
+        AlertDialog alertDialog = alertDialogBu.create();
+        alertDialog.show();
     }
 
     public void mostrarDatos(){
@@ -118,11 +163,11 @@ public class MainActivity extends AppCompatActivity
                     listaHijos.put(listaCabeceras.get(i), grupoAl);
                 }
                 else
-                    Toast.makeText(getApplicationContext(), "Error al cargar alumnos del grupo", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), getString(R.string.cargAl), Toast.LENGTH_SHORT).show();
             }
         }
         else
-            Toast.makeText(getApplicationContext(), "Error al cargar los cursos", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), getString(R.string.cargCr), Toast.LENGTH_SHORT).show();
     }
 
     public void llenarBDCursos(){
@@ -142,9 +187,9 @@ public class MainActivity extends AppCompatActivity
             if(indices[i]==-1)
                 correcto=false;
         if(correcto)
-            Toast.makeText(getApplicationContext(),"Cursos agregados correctamente",Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(),getString(R.string.agrCr),Toast.LENGTH_SHORT).show();
         else
-            Toast.makeText(getApplicationContext(),"Error al agregar cursos",Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(),getString(R.string.agrCrErr),Toast.LENGTH_SHORT).show();
     }
 
     public void llenarBDAlumnos(){
@@ -197,9 +242,105 @@ public class MainActivity extends AppCompatActivity
             if(indices[i]==-1)
                 correcto=false;
         if(correcto)
-            Toast.makeText(getApplicationContext(),"Alumnos agregados correctamente",Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(),getString(R.string.agrAl),Toast.LENGTH_SHORT).show();
         else
-            Toast.makeText(getApplicationContext(),"Error al agregar a los alumnos",Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(),getString(R.string.agrAlErr),Toast.LENGTH_SHORT).show();
+    }
+
+    public void llenarBDProfesores(){
+        long[] indices = new long[9];
+
+        Profesor p1 = new Profesor(1,"Paco Lopez");
+        indices[0]=bd.insertarProfesor(p1);
+        Profesor p2 = new Profesor(2,"Isabel Parejo");
+        indices[0]=bd.insertarProfesor(p2);
+        Profesor p3 = new Profesor(3,"Mario Caminos");
+        indices[0]=bd.insertarProfesor(p3);
+        Profesor p4 = new Profesor(4,"Santiago Ancho");
+        indices[0]=bd.insertarProfesor(p4);
+        Profesor p5 = new Profesor(5,"Ignacio Cabrero");
+        indices[0]=bd.insertarProfesor(p5);
+        Profesor p6 = new Profesor(6,"Elena Santos");
+        indices[0]=bd.insertarProfesor(p6);
+        Profesor p7 = new Profesor(7,"Marilo Casablanca");
+        indices[0]=bd.insertarProfesor(p7);
+        Profesor p8 = new Profesor(8,"Amanda Molas");
+        indices[0]=bd.insertarProfesor(p8);
+        Profesor p9 = new Profesor(9,"Francisco Amarillo");
+        indices[0]=bd.insertarProfesor(p9);
+
+        boolean correcto=true;
+        for(int i=0;i<indices.length;i++)
+            if(indices[i]==-1)
+                correcto=false;
+        if(correcto)
+            Toast.makeText(getApplicationContext(),getString(R.string.agrPr),Toast.LENGTH_SHORT).show();
+        else
+            Toast.makeText(getApplicationContext(),getString(R.string.agrPrErr),Toast.LENGTH_SHORT).show();
+    }
+
+    public void llenarBDAsignaturas(){
+        long[] indices = new long[20];
+
+        Asignatura a1 = new Asignatura(1,"Sistemas Informaticos DAW",3,1);
+        indices[0]=bd.insertarAsignatura(a1);
+        Asignatura a2 = new Asignatura(2,"Sistemas Informaticos DAM",3,3);
+        indices[0]=bd.insertarAsignatura(a2);
+        Asignatura a3 = new Asignatura(3,"Entornos de desarrollo DAW",1,1);
+        indices[0]=bd.insertarAsignatura(a3);
+        Asignatura a4 = new Asignatura(4,"Entornos de desarrollo DAM",1,3);
+        indices[0]=bd.insertarAsignatura(a4);
+        Asignatura a5 = new Asignatura(5,"Programacion Web",5,1);
+        indices[0]=bd.insertarAsignatura(a5);
+        Asignatura a6 = new Asignatura(6,"Programacion",8,3);
+        indices[0]=bd.insertarAsignatura(a6);
+        Asignatura a7 = new Asignatura(7,"Bases de datos DAW",2,1);
+        indices[0]=bd.insertarAsignatura(a7);
+        Asignatura a8 = new Asignatura(8,"Bases de datos DAM",4,3);
+        indices[0]=bd.insertarAsignatura(a8);
+        Asignatura a9 = new Asignatura(9,"Lenguajes de marcas DAW",9,1);
+        indices[0]=bd.insertarAsignatura(a9);
+        Asignatura a10 = new Asignatura(10,"Lenguajes de marcas DAM",7,3);
+        indices[0]=bd.insertarAsignatura(a10);
+        Asignatura a11 = new Asignatura(11,"Programacion en dispositivos moviles",6,4);
+        indices[0]=bd.insertarAsignatura(a11);
+        Asignatura a12 = new Asignatura(12,"Desarrollo de interfaces",7,4);
+        indices[0]=bd.insertarAsignatura(a12);
+        Asignatura a13 = new Asignatura(13,"Programacion concurrente",8,4);
+        indices[0]=bd.insertarAsignatura(a13);
+        Asignatura a14 = new Asignatura(14,"Acceso a datos",6,4);
+        indices[0]=bd.insertarAsignatura(a14);
+        Asignatura a15 = new Asignatura(15,"Sistemas de gestion empresarial",4,4);
+        indices[0]=bd.insertarAsignatura(a15);
+        Asignatura a16 = new Asignatura(16,"Programacion web II",2,2);
+        indices[0]=bd.insertarAsignatura(a16);
+        Asignatura a17 = new Asignatura(17,"Desarrollo de interfaces web",5,2);
+        indices[0]=bd.insertarAsignatura(a17);
+        Asignatura a18 = new Asignatura(18,"Programacion para servidores web",9,2);
+        indices[0]=bd.insertarAsignatura(a18);
+        Asignatura a19 = new Asignatura(19,"Acceso a datos DAW",5,2);
+        indices[0]=bd.insertarAsignatura(a19);
+        Asignatura a20 = new Asignatura(20,"Sistemas de gestion empresarial DAW",9,2);
+        indices[0]=bd.insertarAsignatura(a20);
+
+        boolean correcto=true;
+        for(int i=0;i<indices.length;i++)
+            if(indices[i]==-1)
+                correcto=false;
+        if(correcto)
+            Toast.makeText(getApplicationContext(),getString(R.string.agrAs),Toast.LENGTH_SHORT).show();
+        else
+            Toast.makeText(getApplicationContext(),getString(R.string.agrAsErr),Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    protected void onRestart () {
+        super.onRestart();
+        Toast.makeText(this, getString(R.string.asigRCargada), Toast.LENGTH_SHORT).show();
+        adpAsig = null;
+        adpAsig = new AdaptadorAsignaturas(this,arrayAsig);
+        adpAsig.notifyDataSetChanged();
+        listaAsignaturas.setAdapter(adpAsig);
     }
 
     @Override
@@ -210,49 +351,5 @@ public class MainActivity extends AppCompatActivity
         } else {
             super.onBackPressed();
         }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        //Opciones del menu
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        //Opciones del drawer
-        int id = item.getItemId();
-
-        if (id == R.id.nav_camera) {
-
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
-        }
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
     }
 }

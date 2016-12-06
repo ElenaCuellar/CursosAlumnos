@@ -157,6 +157,54 @@ public class BDCursos extends SQLiteOpenHelper {
             return null;
     }
 
+    public ArrayList<Asignatura> listarAsignaturas(){
+        ArrayList<Asignatura> arrayAsignatura = new ArrayList<>();
+        SQLiteDatabase db = getReadableDatabase();
+        if (db != null) {
+            String[] campos = {"id", "nombre", "idProfesor", "idCurso"};
+            Cursor c = db.query("Asignaturas", campos,null, null, null, null, null, null);
+            if (c.moveToFirst())
+                do {
+                    asignatura = new Asignatura(c.getInt(0), c.getString(1),c.getInt(2),c.getInt(3));
+                    arrayAsignatura.add(asignatura);
+                }while(c.moveToNext());
+            c.close();
+        }
+        db.close();
+        if(arrayAsignatura.size()>0)
+            return arrayAsignatura;
+        else
+            return null;
+    }
+
+    public String mostrarCursoAsig(int idAsig){
+        SQLiteDatabase db = getReadableDatabase();
+        if (db != null) {
+            String[] campos = {"nombre"};
+            Cursor c = db.query("Cursos", campos,"id=(SELECT idCurso FROM Asignaturas WHERE id="+idAsig+")",
+                    null, null, null, null, null);
+            if (c.moveToFirst())
+                return c.getString(0);
+            c.close();
+        }
+        db.close();
+        return " ";
+    }
+
+    public String mostrarProfesorAsig(int idAsig){
+        SQLiteDatabase db = getReadableDatabase();
+        if (db != null) {
+            String[] campos = {"nombre"};
+            Cursor c = db.query("Profesores", campos,"id=(SELECT idProfesor FROM Asignaturas WHERE id="+idAsig+")",
+                    null, null, null, null, null);
+            if (c.moveToFirst())
+                return c.getString(0);
+            c.close();
+        }
+        db.close();
+        return " ";
+    }
+
     //INSERT
 
     public long insertarCurso(Curso curso){

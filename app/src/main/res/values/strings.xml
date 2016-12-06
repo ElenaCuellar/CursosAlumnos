@@ -1,8 +1,39 @@
 <resources>
     <string name="app_name">CursosAlumnos</string>
 
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="navigation_drawer_open">Navigation Drawer abierto</string>
+    <string name="navigation_drawer_close">Navigation Drawer cerrado</string>
 
-    <string name="action_settings">Settings</string>
+    <string name="al1">Alumno: </string>
+    <string name="gr1">El grupo </string>
+    <string name="gr2"> se ha abierto</string>
+    <string name="gr3"> se ha cerrado</string>
+
+    <string name="asigCargada">Lista de asignaturas cargada</string>
+    <string name="asigRCargada">Lista de asignaturas recargada</string>
+    <string name="asigCargadaErr">Error al llenar la lista de asignaturas</string>
+
+    <string name="asig1">Asignatura: </string>
+    <string name="curso1">Curso: </string>
+    <string name="prof1">Profesor: </string>
+    <string name="aceptar">Aceptar</string>
+
+    <string name="cargAl">Error al cargar alumnos del grupo</string>
+    <string name="cargCr">Error al cargar los cursos</string>
+
+    <string name="agrCr">Cursos agregados correctamente</string>
+    <string name="agrCrErr">Error al agregar cursos</string>
+
+    <string name="agrAl">Alumnos agregados correctamente</string>
+    <string name="agrAlErr">Error al agregar a los alumnos</string>
+
+    <string name="agrPr">Profesores agregados correctamente</string>
+    <string name="agrPrErr">Error al agregar a los profesores</string>
+
+    <string name="agrAs">Asignaturas agregadas correctamente</string>
+    <string name="agrAsErr">Error al agregar las asignaturas</string>
+
+    <string name="navheader1">Asignaturas</string>
+    <string name="navheader2">Asignaturas de los cursos</string>
+
 </resources>
