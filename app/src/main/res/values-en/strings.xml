@@ -2,7 +2,7 @@
 <resources>
     <string name="app_name">CursosAlumnos</string>
     <string name="al1">"Student: "</string>
-    <string name="gr1">\"Group \"</string>
+    <string name="gr1">"Group "</string>
     <string name="gr2">" is opened"</string>
     <string name="gr3">" is closed"</string>
     <string name="navigation_drawer_close">Opened Navigation Drawer</string>
