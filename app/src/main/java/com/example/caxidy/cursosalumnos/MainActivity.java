@@ -1,5 +1,5 @@
 /*Actividades finales 2 y 3: uso de ExpandableListView y Navigation Drawer que contenga un ListView + uso de base de datos
- * La aplicacion consta de un ExpandableListView de los cursos del ciclo, con sus alumnos y de un Navigation Drawer que
+ * La aplicacion consta de un ExpandableListView de los cursos del ciclo, con sus alumnos, y de un Navigation Drawer que
   * contiene un ListView con las asignaturas de los cursos. Si se selecciona una asignatura sale un Dialog con informacion.*/
 
 package com.example.caxidy.cursosalumnos;

@@ -5,9 +5,9 @@
     <string name="navigation_drawer_close">Navigation Drawer cerrado</string>
 
     <string name="al1">Alumno: </string>
-    <string name="gr1">El grupo </string>
-    <string name="gr2"> se ha abierto</string>
-    <string name="gr3"> se ha cerrado</string>
+    <string name="gr1">"El grupo "</string>
+    <string name="gr2">" se ha abierto"</string>
+    <string name="gr3">" se ha cerrado"</string>
 
     <string name="asigCargada">Lista de asignaturas cargada</string>
     <string name="asigRCargada">Lista de asignaturas recargada</string>
